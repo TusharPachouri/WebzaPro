@@ -1,15 +1,37 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { Mail, MapPin, ArrowRight } from "lucide-react";
 
 export default function Contact() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [form, setForm] = useState({ name: "", email: "", budget: "", message: "" });
   const [sent, setSent] = useState(false);
+
+  // Play video only when scrolled into view, at slow speed
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.playbackRate = 0.92;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -19,26 +41,22 @@ export default function Contact() {
   return (
     <>
       {/* Bold CTA strip */}
-      <div className="relative py-40 px-6 bg-black border-t border-white/[0.06] overflow-hidden">
-        {/* Glow */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-96 h-96 rounded-full bg-blue-600/15 blur-3xl" />
-          <div className="w-64 h-64 rounded-full bg-violet-600/10 blur-2xl absolute" />
-        </div>
+      <div className="relative pt-40 pb-0 px-6 bg-black border-t border-white/[0.06] overflow-hidden">
 
+        {/* Text + Button — layered on top of video */}
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 text-center"
+          className="relative z-20 text-center"
         >
-          <h2 className="text-6xl sm:text-7xl md:text-[100px] font-black tracking-tight text-white leading-[0.9] mb-8">
+          <h2 className="text-5xl sm:text-7xl md:text-[88px] font-bold tracking-tighter text-white leading-[0.95] mb-6">
             Build bold.
             <br />
             Launch fast.
           </h2>
-          <p className="text-white/40 text-lg max-w-md mx-auto mb-10 leading-relaxed">
+          <p className="text-zinc-400 text-lg md:text-xl max-w-lg mx-auto mb-10 leading-relaxed tracking-tight">
             Let&apos;s make something the internet hasn&apos;t seen before.
           </p>
           <a
@@ -48,6 +66,35 @@ export default function Contact() {
             Start a project
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
           </a>
+        </motion.div>
+
+        {/* Video — plays on scroll, layered behind text */}
+        <motion.div
+          initial={{ opacity: 0, y: 48 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 -mt-16 mx-auto w-full overflow-hidden"
+          style={{ maxWidth: "1100px" }}
+        >
+          <video
+            ref={videoRef}
+            src="/videos/holdingLogo.mp4"
+            muted
+            playsInline
+            className="w-full h-auto block scale-[1.25]"
+          />
+          {/* Subtle gradient blends on edges */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Left */}
+            <div className="absolute inset-y-0 left-0 w-14 bg-gradient-to-r from-black to-transparent" />
+            {/* Right */}
+            <div className="absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-black to-transparent" />
+            {/* Top */}
+            <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black to-transparent" />
+            {/* Bottom */}
+            <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black to-transparent" />
+          </div>
         </motion.div>
       </div>
 

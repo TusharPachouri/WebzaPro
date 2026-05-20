@@ -104,7 +104,7 @@ export default function Hero() {
 
         <motion.h1
           variants={itemVariants}
-          className="text-6xl sm:text-7xl md:text-[96px] font-black tracking-tight text-white leading-[0.92] max-w-4xl"
+          className="text-6xl sm:text-7xl md:text-[96px] font-bold tracking-tighter text-white leading-[0.92] max-w-4xl"
         >
           We build websites
           <br />
@@ -113,7 +113,7 @@ export default function Hero() {
 
         <motion.p
           variants={itemVariants}
-          className="mt-7 text-lg text-white/45 max-w-md leading-relaxed"
+          className="mt-7 text-lg text-zinc-400 max-w-md leading-relaxed tracking-tight"
         >
           WebzaPro is a full-service web development agency crafting fast, scalable, and beautiful digital experiences for ambitious brands.
         </motion.p>
